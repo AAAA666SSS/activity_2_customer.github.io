@@ -31,6 +31,7 @@
             grid-template-rows: auto 1fr auto;
             width: 100%;
             height: 100%;
+            position: relative;
             background-color: inherit;
         }
 
@@ -43,12 +44,15 @@
             font-weight: 500;
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
             user-select: none;
+            z-index: 2;
         }
 
         .iframe-wrapper {
             width: 100%;
             background-color: #ffffff;
             overflow: hidden;
+            position: relative;
+            z-index: 1;
         }
 
         iframe {
@@ -68,6 +72,51 @@
             color: #1e3c5c;
             border-top: 1px solid #a0b9d4;
             user-select: none;
+            z-index: 2;
+        }
+
+        /* ---------- 載入動畫層 ---------- */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #c0d0e0;
+            border-top: 6px solid #1e3c5c;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            color: #1e3c5c;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
         }
     </style>
 </head>
@@ -81,6 +130,23 @@
                 }
             });
             document.addEventListener('dblclick', e => e.preventDefault());
+
+            window.addEventListener('load', function() {
+                const iframe = document.querySelector('iframe');
+                const overlay = document.querySelector('.loading-overlay');
+                if (iframe && overlay) {
+                    if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+                        overlay.classList.add('hidden');
+                    } else {
+                        iframe.addEventListener('load', function() {
+                            overlay.classList.add('hidden');
+                        });
+                        setTimeout(() => {
+                            overlay.classList.add('hidden');
+                        }, 5000);
+                    }
+                }
+            });
         })();
     </script>
 
@@ -90,6 +156,11 @@
         </div>
 
         <div class="iframe-wrapper">
+            <div class="loading-overlay">
+                <div class="spinner"></div>
+                <div class="loading-text">載入中，請稍後...</div>
+            </div>
+
             <iframe 
                 src="https://script.google.com/macros/s/AKfycbwUXF4XxR4ZZenwgx2zK1z504qMIuSc7MJRdQU9bY_0YILmt7_taOQs0D0I_mfHWFzR/exec?p=customer"
                 title="Google Apps 客戶頁面"
@@ -101,7 +172,7 @@
         </div>
 
         <div class="footer-note">
-            ⭐ 點擊上方區域填寫資料，如有問題請洽客服
+            ⭐ 點擊上方區域填寫戶號(包裝袋上也貼有紙張標籤喔)
         </div>
     </div>
 </body>
