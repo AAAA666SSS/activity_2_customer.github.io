@@ -2,11 +2,9 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <!-- 確保在任何裝置（包括 LINE）上都以滿版且不縮放的方式顯示 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
     <title>客戶專用頁面</title>
     <style>
-        /* 極簡重置與基礎樣式，確保滿版無邊距 */
         * {
             margin: 0;
             padding: 0;
@@ -15,53 +13,42 @@
 
         html, body {
             width: 100%;
-            min-height: 100vh;
-            background-color: #e8f0fe; /* 淺藍底色區分 */
+            height: 100%;
+            background-color: #e8f0fe;
             font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            /* 基礎字體放大至 18px，符合長輩閱讀 */
             font-size: 18px;
-            /* 防止他人選取、複製內容 (基本防護) */
             user-select: none;
             -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
         }
 
-        /* 例外：允許在 iframe 內部正常操作，但禁止在外部頁面選取 */
         iframe {
             user-select: text;
             -webkit-user-select: text;
-            -moz-user-select: text;
-            -ms-user-select: text;
         }
 
-        /* 主容器：滿版 Flex 佈局 */
         .full-screen-container {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
             width: 100%;
-            min-height: 100vh;
+            height: 100%;
+            background-color: inherit;
         }
 
-        /* 標題列 */
         .header-bar {
-            background-color: #1e3c5c; /* 深藍色調 */
+            background-color: #1e3c5c;
             color: white;
             padding: 0.8rem 1rem;
             text-align: center;
             font-size: 1.3rem;
             font-weight: 500;
-            letter-spacing: 0.5px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
             user-select: none;
         }
 
-        /* iframe 區域：填滿剩餘空間 */
         .iframe-wrapper {
-            flex: 1;
             width: 100%;
             background-color: #ffffff;
-            min-height: 0;
+            overflow: hidden;
         }
 
         iframe {
@@ -73,7 +60,6 @@
             background-color: transparent;
         }
 
-        /* 頁腳提示 */
         .footer-note {
             background-color: #d4e1f2;
             text-align: center;
@@ -82,38 +68,27 @@
             color: #1e3c5c;
             border-top: 1px solid #a0b9d4;
             user-select: none;
-            font-weight: 400;
         }
     </style>
 </head>
 <body>
-    <!-- 防止右鍵選單與複製快捷鍵 (基本防護) -->
     <script>
         (function() {
-            document.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-                return false;
-            });
-            document.addEventListener('keydown', function(e) {
-                if ( (e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C' || e.key === 's' || e.key === 'S' || e.key === 'u' || e.key === 'U') ) {
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('keydown', e => {
+                if ((e.ctrlKey || e.metaKey) && ['c', 'C', 's', 'S', 'u', 'U'].includes(e.key)) {
                     e.preventDefault();
-                    return false;
                 }
             });
-            // 禁用雙擊選取文字 (進一步防護)
-            document.addEventListener('dblclick', function(e) {
-                e.preventDefault();
-            });
+            document.addEventListener('dblclick', e => e.preventDefault());
         })();
     </script>
 
     <div class="full-screen-container">
-        <!-- 標題列，清楚識別為客戶專區 -->
         <div class="header-bar">
             👤 客戶專用表單
         </div>
 
-        <!-- 嵌入您的第二個 Google Apps Script 網頁 (帶參數 p=customer) -->
         <div class="iframe-wrapper">
             <iframe 
                 src="https://script.google.com/macros/s/AKfycbwUXF4XxR4ZZenwgx2zK1z504qMIuSc7MJRdQU9bY_0YILmt7_taOQs0D0I_mfHWFzR/exec?p=customer"
@@ -125,7 +100,6 @@
             </iframe>
         </div>
 
-        <!-- 簡易頁腳提示 -->
         <div class="footer-note">
             ⭐ 點擊上方區域填寫資料，如有問題請洽客服
         </div>
